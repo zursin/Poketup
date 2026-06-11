@@ -30,11 +30,17 @@ export class LoginPhase extends Phase {
 
     super.start();
 
+    if (bypassLogin) {
+      await gameData.loadSystem();
+      await this.end();
+      return;
+    }
+
     const hasSession = !!getCookie(sessionIdKey);
 
     ui.setMode(UiMode.LOADING, { buttonActions: [] });
 
-    const response = await executeIf(bypassLogin || hasSession, updateUserInfo);
+    const response = await executeIf(hasSession, updateUserInfo);
     const success = response?.[0] ?? false;
     const statusCode = response ? response[1] : null;
 
@@ -44,7 +50,7 @@ export class LoginPhase extends Phase {
     }
 
     await gameData.loadSystem();
-    if (success || bypassLogin) {
+    if (success) {
       await this.end();
       return;
     }
