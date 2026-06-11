@@ -21,15 +21,21 @@ export class EndCardPhase extends Phase {
       `end_${globalScene.gameData.gender === PlayerGender.FEMALE ? "f" : "m"}`,
     );
     this.endCard.setOrigin(0);
-    this.endCard.setScale(0.5);
+    this.endCard.setDisplaySize(globalScene.scaledCanvas.width, globalScene.scaledCanvas.height);
     globalScene.field.add(this.endCard);
+
+    // TUP: Mostrar timer de recorrido
+    const timeInSecs = globalScene.sessionPlayTime ?? 0;
+    const mins = Math.floor(timeInSecs / 60);
+    const secs = timeInSecs % 60;
+    const timeStr = `\nTiempo total: ${mins} min y ${secs} seg`;
 
     this.text = addTextObject(
       globalScene.scaledCanvas.width / 2,
-      globalScene.scaledCanvas.height - 16,
-      i18next.t("battle:congratulations"),
+      globalScene.scaledCanvas.height - 30,
+      i18next.t("battle:congratulations") + timeStr,
       TextStyle.SUMMARY,
-      { fontSize: "128px" },
+      { fontSize: "96px", align: "center" },
     );
     this.text.setOrigin(0.5);
     globalScene.field.add(this.text);

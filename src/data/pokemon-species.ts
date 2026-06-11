@@ -664,13 +664,15 @@ export abstract class PokemonSpeciesForm {
           end: 400,
         });
         console.warn = originalWarn;
+        const isExeggutor = [SpeciesId.EXEGGCUTE, SpeciesId.EXEGGUTOR, SpeciesId.ALOLA_EXEGGUTOR].includes(this.speciesId);
+        const animFrameRate = isExeggutor ? 30 : 10;
         if (globalScene.anims.exists(spriteKey)) {
-          globalScene.anims.get(spriteKey).frameRate = 10;
+          globalScene.anims.get(spriteKey).frameRate = animFrameRate;
         } else {
           globalScene.anims.create({
             key: this.getSpriteKey(female, formIndex, shiny, variant, back),
             frames: frameNames,
-            frameRate: 10,
+            frameRate: animFrameRate,
             repeat: -1,
           });
         }

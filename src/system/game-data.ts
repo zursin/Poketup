@@ -304,7 +304,7 @@ export class GameData {
     this.saveSetting(SettingKeys.Player_Gender, systemData.gender === PlayerGender.FEMALE ? 1 : 0);
 
     if (systemData.starterData) {
-      this.starterData = systemData.starterData;
+      this.starterData = Object.assign(this.starterData, systemData.starterData);
     } else {
       this.initStarterData();
 

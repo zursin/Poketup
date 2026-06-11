@@ -224,7 +224,8 @@ export function initGenerationSeven(): SpeciesDataMapConfig {
       malePercent: 87.5,
       genderDiffs: false,
     }),
-    starter: SpeciesId.ROWLET,
+    starter: SpeciesId.DECIDUEYE,
+    starterCost: 3,
     evolutions: [],
     passives: AbilityId.SNIPER,
     levelMoves: [
@@ -444,7 +445,8 @@ export function initGenerationSeven(): SpeciesDataMapConfig {
       malePercent: 87.5,
       genderDiffs: false,
     }),
-    starter: SpeciesId.LITTEN,
+    starter: SpeciesId.INCINEROAR,
+    starterCost: 5,
     evolutions: [],
     passives: AbilityId.TOUGH_CLAWS,
     levelMoves: [
@@ -684,7 +686,8 @@ export function initGenerationSeven(): SpeciesDataMapConfig {
       malePercent: 87.5,
       genderDiffs: false,
     }),
-    starter: SpeciesId.POPPLIO,
+    starter: SpeciesId.PRIMARINA,
+    starterCost: 3,
     evolutions: [],
     passives: AbilityId.PUNK_ROCK,
     levelMoves: [

@@ -877,9 +877,10 @@ export class SummaryUiHandler extends UiHandler {
 
         const getTypeIcon = (index: number, type: PokemonType, tera = false) => {
           const xCoord = typeLabel.width * typeLabel.scale + 9 + 34 * index;
-          const typeIcon = tera
+          const hideTypes = !!globalScene.currentBattle;
+          const typeIcon = (tera && !hideTypes)
             ? globalScene.add.sprite(xCoord, 42, "type_tera")
-            : globalScene.add.sprite(xCoord, 42, getLocalizedSpriteKey("types"), PokemonType[type].toLowerCase());
+            : globalScene.add.sprite(xCoord, 42, getLocalizedSpriteKey("types"), hideTypes ? "unknown" : PokemonType[type].toLowerCase());
           if (tera) {
             typeIcon.setScale(0.5);
             const typeRgb = getTypeRgb(type);
@@ -1222,7 +1223,8 @@ export class SummaryUiHandler extends UiHandler {
           if (this.newMove && this.pokemon) {
             const spriteKey = getLocalizedSpriteKey("types");
             const moveType = this.pokemon.getMoveType(this.newMove);
-            const newMoveTypeIcon = globalScene.add.sprite(0, 0, spriteKey, PokemonType[moveType].toLowerCase());
+            const hideTypes = !!globalScene.currentBattle;
+            const newMoveTypeIcon = globalScene.add.sprite(0, 0, spriteKey, hideTypes ? "unknown" : PokemonType[moveType].toLowerCase());
             newMoveTypeIcon.setOrigin(0, 1);
             this.extraMoveRowContainer.add(newMoveTypeIcon);
           }
@@ -1248,7 +1250,8 @@ export class SummaryUiHandler extends UiHandler {
           if (move && this.pokemon) {
             const spriteKey = getLocalizedSpriteKey("types");
             const moveType = this.pokemon.getMoveType(move.getMove());
-            const typeIcon = globalScene.add.sprite(0, 0, spriteKey, PokemonType[moveType].toLowerCase());
+            const hideTypes = !!globalScene.currentBattle;
+            const typeIcon = globalScene.add.sprite(0, 0, spriteKey, hideTypes ? "unknown" : PokemonType[moveType].toLowerCase());
             typeIcon.setOrigin(0, 1);
             moveRowContainer.add(typeIcon);
           }

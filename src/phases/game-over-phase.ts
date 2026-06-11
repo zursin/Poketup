@@ -222,43 +222,10 @@ export class GameOverPhase extends BattlePhase {
           };
 
           if (this.isVictory && globalScene.gameMode.isClassic) {
-            const dialogueKey = "miscDialogue:ending";
-
-            if (globalScene.ui.shouldSkipDialogue(dialogueKey)) {
-              const endCardPhase = globalScene.phaseManager.create("EndCardPhase");
-              globalScene.phaseManager.unshiftPhase(endCardPhase);
-              clear(endCardPhase);
-            } else {
-              globalScene.ui.fadeIn(500).then(() => {
-                const genderIndex = globalScene.gameData.gender ?? PlayerGender.UNSET;
-                const genderStr = PlayerGender[genderIndex].toLowerCase();
-                // Dialogue has to be retrieved so that the rival's expressions can be loaded and shown via getCharVariantFromDialogue
-                const dialogue = i18next.t(dialogueKey, { context: genderStr });
-                globalScene.charSprite
-                  .showCharacter(
-                    `rival_${globalScene.gameData.gender === PlayerGender.FEMALE ? "m" : "f"}`,
-                    getCharVariantFromDialogue(dialogue),
-                  )
-                  .then(() => {
-                    globalScene.ui.showDialogue(
-                      dialogueKey,
-                      globalScene.gameData.gender === PlayerGender.FEMALE
-                        ? trainerConfigs[TrainerType.RIVAL].name
-                        : trainerConfigs[TrainerType.RIVAL].nameFemale,
-                      null,
-                      () => {
-                        globalScene.ui.fadeOut(500).then(() => {
-                          globalScene.charSprite.hide().then(() => {
-                            const endCardPhase = globalScene.phaseManager.create("EndCardPhase");
-                            globalScene.phaseManager.unshiftPhase(endCardPhase);
-                            clear(endCardPhase);
-                          });
-                        });
-                      },
-                    );
-                  });
-              });
-            }
+            // TUP: Saltar siempre el diálogo del rival
+            const endCardPhase = globalScene.phaseManager.create("EndCardPhase");
+            globalScene.phaseManager.unshiftPhase(endCardPhase);
+            clear(endCardPhase);
           } else {
             clear();
           }

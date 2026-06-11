@@ -266,7 +266,7 @@ export class FightUiHandler extends UiHandler implements InfoToggle {
     const pokemonMove = moveset[cursor];
     const moveType = pokemon.getMoveType(pokemonMove.getMove());
     const textureKey = getLocalizedSpriteKey("types");
-    this.typeIcon.setTexture(textureKey, PokemonType[moveType].toLowerCase()).setScale(0.8);
+    this.typeIcon.setTexture(textureKey, "unknown").setScale(0.8);
 
     const moveCategory = pokemonMove.getMove().category;
     this.moveCategoryIcon.setTexture("categories", MoveCategory[moveCategory].toLowerCase()).setScale(1.0);
@@ -371,9 +371,7 @@ export class FightUiHandler extends UiHandler implements InfoToggle {
    * @returns A color or undefined if the default color should be used
    */
   private getMoveColor(pokemon: Pokemon, pokemonMove: PokemonMove): string | undefined {
-    if (!globalScene.typeHints) {
-      return;
-    }
+    return;
 
     const opponents = pokemon.getOpponents();
     if (opponents.length <= 0) {

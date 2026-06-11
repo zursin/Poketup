@@ -13,6 +13,7 @@ import { BattlerTagLapseType } from "#enums/battler-tag-lapse-type";
 import { BattlerTagType } from "#enums/battler-tag-type";
 import { HitResult } from "#enums/hit-result";
 import { StatusEffect } from "#enums/status-effect";
+import { SpeciesId } from "#enums/species-id";
 import { SwitchType } from "#enums/switch-type";
 import type { EnemyPokemon, PlayerPokemon, Pokemon } from "#field/pokemon";
 import { PokemonInstantReviveModifier } from "#modifiers/modifier";
@@ -86,7 +87,7 @@ export class FaintPhase extends PokemonPhase {
       }
     }
 
-    if (globalScene.currentBattle.isClassicFinalBoss && !this.player) {
+    if (globalScene.currentBattle.isClassicFinalBoss && !this.player && faintPokemon.species.speciesId === SpeciesId.ETERNATUS) {
       this.handleFinalBossFaint();
     } else {
       this.doFaint();

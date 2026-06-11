@@ -127,6 +127,7 @@ const tutorialHandlers = {
  * @returns a promise with result `true` if the tutorial was run and finished, `false` otherwise
  */
 export async function handleTutorial(tutorial: Tutorial): Promise<boolean> {
+  return false;
   if (!globalScene.enableTutorials && !activeOverrides.BYPASS_TUTORIAL_SKIP_OVERRIDE) {
     return false;
   }
@@ -141,7 +142,7 @@ export async function handleTutorial(tutorial: Tutorial): Promise<boolean> {
   // starting tutorial, disable menu
   globalScene.disableMenu = true;
   if (handler instanceof AwaitableUiHandler) {
-    handler.tutorialActive = true;
+    (handler as AwaitableUiHandler).tutorialActive = true;
   }
 
   await showTutorialOverlay(handler);
@@ -152,7 +153,7 @@ export async function handleTutorial(tutorial: Tutorial): Promise<boolean> {
   globalScene.disableMenu = isMenuDisabled;
   globalScene.gameData.saveTutorialFlag(tutorial, true);
   if (handler instanceof AwaitableUiHandler) {
-    handler.tutorialActive = false;
+    (handler as AwaitableUiHandler).tutorialActive = false;
   }
 
   return true;

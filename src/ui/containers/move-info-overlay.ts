@@ -178,7 +178,7 @@ export class MoveInfoOverlay extends Phaser.GameObjects.Container implements Inf
     this.pow.setText(move.power >= 0 ? move.power.toString() : "---");
     this.acc.setText(move.accuracy >= 0 ? move.accuracy.toString() : "---");
     this.pp.setText(move.pp >= 0 ? move.pp.toString() : "---");
-    this.typ.setTexture(getLocalizedSpriteKey("types"), PokemonType[move.type].toLowerCase());
+    this.typ.setTexture(getLocalizedSpriteKey("types"), "unknown");
     this.cat.setFrame(MoveCategory[move.category].toLowerCase());
 
     this.desc.setText(move?.effect || "");

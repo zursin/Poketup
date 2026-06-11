@@ -510,6 +510,10 @@ export class NonSuperEffectiveImmunityAbAttr extends TypeImmunityAbAttr {
   }
 
   override canApply({ move, typeMultiplier }: TypeMultiplierAbAttrParams): boolean {
+    const correctMove = (globalScene as any).correctMoveForWave;
+    if (correctMove !== undefined) {
+      return move.is("AttackMove") && move.id !== correctMove;
+    }
     return move.is("AttackMove") && typeMultiplier.value < 2;
   }
 

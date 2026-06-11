@@ -298,7 +298,8 @@ export class GameMode implements GameModeConfig {
     switch (modeId) {
       case GameModes.CLASSIC:
       case GameModes.CHALLENGE:
-        return waveIndex === 200;
+        // TUP: Terminar la partida en la oleada 4
+        return waveIndex === 4;
       case GameModes.ENDLESS:
       case GameModes.SPLICED_ENDLESS:
         return waveIndex % 250 === 0;

@@ -3860,8 +3860,14 @@ export class StarterSelectUiHandler extends MessageUiHandler {
     speciesId: SpeciesId,
     applyChallenge = true,
   ): { dexEntry: DexEntry; starterDataEntry: StarterDataEntry } {
-    const dexEntry = globalScene.gameData.dexData[speciesId];
-    const starterDataEntry = globalScene.gameData.starterData[speciesId];
+    let dexEntry = globalScene.gameData.dexData[speciesId];
+    if (!dexEntry) dexEntry = { caughtAttr: 0n, seenAttr: 0n, natureAttr: 0, shinyAttr: 0, formAttr: 0n, genderAttr: 0, abilityAttr: 0, ivs: [0,0,0,0,0,0], ribbons: new Set() } as any;
+    if (globalScene.gameMode.isClassic && [SpeciesId.INCINEROAR, SpeciesId.POPPLIO, SpeciesId.ROWLET].includes(speciesId)) {
+        dexEntry.caughtAttr = 1n;
+        dexEntry.seenAttr = 1n;
+    }
+    let starterDataEntry = globalScene.gameData.starterData[speciesId];
+    if (!starterDataEntry) starterDataEntry = { eggMoves: 0, abilityAttr: 1, passiveAttr: 0, valueReduction: 0, candyCount: 0, friendship: 0, classicWinCount: 0, moveset: null } as any;
 
     // Unpacking to make a copy by values, not references
     const copiedDexEntry = { ...dexEntry };

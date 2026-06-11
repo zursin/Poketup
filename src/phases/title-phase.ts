@@ -104,44 +104,12 @@ export class TitlePhase extends Phase {
           const { gameData } = globalScene;
           const options: OptionSelectItem[] = [];
           options.push({
-            label: GameMode.getModeName(GameModes.CLASSIC),
+            label: "Recorrido Tup",
             handler: () => {
               setModeAndEnd(GameModes.CLASSIC);
               return true;
             },
           });
-          options.push({
-            label: i18next.t("menu:dailyRun"),
-            handler: () => {
-              this.initDailyRun();
-              return true;
-            },
-          });
-          if (gameData.isUnlocked(Unlockables.ENDLESS_MODE)) {
-            options.push({
-              label: GameMode.getModeName(GameModes.CHALLENGE),
-              handler: () => {
-                setModeAndEnd(GameModes.CHALLENGE);
-                return true;
-              },
-            });
-            options.push({
-              label: GameMode.getModeName(GameModes.ENDLESS),
-              handler: () => {
-                setModeAndEnd(GameModes.ENDLESS);
-                return true;
-              },
-            });
-            if (gameData.isUnlocked(Unlockables.SPLICED_ENDLESS_MODE)) {
-              options.push({
-                label: GameMode.getModeName(GameModes.SPLICED_ENDLESS),
-                handler: () => {
-                  setModeAndEnd(GameModes.SPLICED_ENDLESS);
-                  return true;
-                },
-              });
-            }
-          }
           // Cancel button = back to title
           options.push({
             label: i18next.t("menu:cancel"),

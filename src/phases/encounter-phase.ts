@@ -34,6 +34,10 @@ import { getGoldenBugNetSpecies } from "#mystery-encounters/encounter-pokemon-ut
 import { BattlePhase } from "#phases/battle-phase";
 import { achvs } from "#system/achv";
 import { randSeedInt, randSeedItem } from "#utils/common";
+import { AbilityId } from "#enums/ability-id";
+import { MoveId } from "#enums/move-id";
+import { PokemonMove } from "#moves/pokemon-move";
+import { getPokemonSpecies } from "#utils/pokemon-utils";
 import i18next from "i18next";
 
 export class EncounterPhase extends BattlePhase {
@@ -99,6 +103,22 @@ export class EncounterPhase extends BattlePhase {
 
     let totalBst = 0;
 
+    // TUP: En la oleada 1, dar a Incineroar los 4 ataques-respuesta del quiz
+    if (globalScene.gameMode.isClassic && battle.waveIndex === 1) {
+      for (const p of globalScene.getPlayerParty()) {
+        if (p.species.speciesId === SpeciesId.INCINEROAR) {
+          p.moveset = [
+            new PokemonMove(MoveId.FLAMETHROWER, 0, 0, 15), // ✅ W1 Diversidad  (Fuego  > Exeggcute Planta)
+            new PokemonMove(MoveId.SURF,          0, 0, 15), // ✅ W2 Integración (Agua   > Incineroar Fuego)
+            new PokemonMove(MoveId.THUNDERBOLT,   0, 0, 15), // ✅ W3 Confianza   (Elec   > Pidgeot Volador)
+            new PokemonMove(MoveId.CROSS_CHOP,    0, 0, 15), // ✅ W4 Luchar entre sí (Lucha > Snorlax Normal)
+          ];
+          p.level = 15;
+          p.hp = p.getMaxHp();
+        }
+      }
+    }
+
     battle.enemyLevels?.every((level, e) => {
       if (battle.isBattleMysteryEncounter()) {
         // Skip enemy loading for MEs, those are loaded elsewhere
@@ -109,8 +129,20 @@ export class EncounterPhase extends BattlePhase {
           battle.enemyParty[e] = battle.trainer?.genPartyMember(e)!; // TODO:: is the bang correct here?
         } else {
           let enemySpecies = globalScene.randomSpecies(battle.waveIndex, level, true);
+          let enemyLevel = level;
+          // TUP: Forzar jefes del quiz para oleadas 1-4
+          if (globalScene.gameMode.isClassic && battle.waveIndex >= 1 && battle.waveIndex <= 4) {
+            enemyLevel = 10;
+            switch (battle.waveIndex) {
+              case 1: enemySpecies = getPokemonSpecies(SpeciesId.EXEGGCUTE); break;
+              case 2: enemySpecies = getPokemonSpecies(SpeciesId.INCINEROAR); break;
+              case 3: enemySpecies = getPokemonSpecies(SpeciesId.PIDGEOT); break;
+              case 4: enemySpecies = getPokemonSpecies(SpeciesId.SNORLAX); break;
+            }
+          }
           // If player has golden bug net, rolls 10% chance to replace non-boss wave wild species from the golden bug net bug pool
           if (
+            !(globalScene.gameMode.isClassic && battle.waveIndex >= 1 && battle.waveIndex <= 4) &&
             globalScene.findModifier(m => m instanceof BoostBugSpawnModifier)
             && !globalScene.gameMode.isBoss(battle.waveIndex)
             && globalScene.arena.biomeId !== BiomeId.END
@@ -120,7 +152,7 @@ export class EncounterPhase extends BattlePhase {
           }
           battle.enemyParty[e] = globalScene.addEnemyPokemon(
             enemySpecies,
-            level,
+            enemyLevel,
             TrainerSlot.NONE,
             !!globalScene.getEncounterBossSegments(battle.waveIndex, level, enemySpecies),
           );
@@ -140,6 +172,12 @@ export class EncounterPhase extends BattlePhase {
       if (e < (battle.double ? 2 : 1)) {
         enemyPokemon.setX(-66 + enemyPokemon.getFieldPositionOffset()[0]);
         enemyPokemon.fieldSetup(true);
+      }
+
+      // TUP: Wonder Guard + solo Dragon Rage para jefes de oleadas 1-4
+      if (globalScene.gameMode.isClassic && battle.waveIndex >= 1 && battle.waveIndex <= 4) {
+        enemyPokemon.summonData.ability = AbilityId.WONDER_GUARD;
+        enemyPokemon.moveset = [new PokemonMove(MoveId.DRAGON_RAGE, 0, 0, 35)];
       }
 
       if (!this.loaded) {
@@ -413,7 +451,37 @@ export class EncounterPhase extends BattlePhase {
         }
       }
       globalScene.updateFieldScale();
-      if (showEncounterMessage) {
+      // TUP: Mostrar pregunta del quiz según la oleada
+      if (globalScene.gameMode.isClassic && globalScene.currentBattle.waveIndex >= 1 && globalScene.currentBattle.waveIndex <= 4) {
+        const wave = globalScene.currentBattle.waveIndex;
+        const waveQuestions: Record<number, { q: string; hint: string }> = {
+          1: {
+            q: "¿Qué pilar aprovecha las habilidades\ndiferentes de cada integrante?",
+            hint: "Elige el ataque con el nombre correcto.",
+          },
+          2: {
+            q: "¿Qué elemento ensambla las diferencias\nindividuales como piezas de un rompecabezas?",
+            hint: "Elige el ataque con el nombre correcto.",
+          },
+          3: {
+            q: "¿Qué es indispensable para que el equipo\ncumpla sus tareas sin depender de otros?",
+            hint: "Elige el ataque con el nombre correcto.",
+          },
+          4: {
+            q: "¿Qué actitud destruye la sinergia y\ndebe ser eliminada del equipo?",
+            hint: "Derrota este obstáculo con el ataque correcto.",
+          },
+        };
+        const wq = waveQuestions[wave];
+        if (wq) {
+          const startBattle = () => this.end();
+          const showHint = () => globalScene.ui.showText(wq.hint, null, startBattle, 0, true);
+          const showQuestion = () => globalScene.ui.showText(wq.q, null, showHint, 0, true);
+          globalScene.ui.showText(this.getEncounterMessage(), null, showQuestion, 1500, true);
+        } else {
+          this.end();
+        }
+      } else if (showEncounterMessage) {
         globalScene.ui.showText(this.getEncounterMessage(), null, () => this.end(), 1500);
       } else {
         this.end();
