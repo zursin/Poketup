@@ -3862,7 +3862,7 @@ export class StarterSelectUiHandler extends MessageUiHandler {
   ): { dexEntry: DexEntry; starterDataEntry: StarterDataEntry } {
     let dexEntry = globalScene.gameData.dexData[speciesId];
     if (!dexEntry) dexEntry = { caughtAttr: 0n, seenAttr: 0n, natureAttr: 0, shinyAttr: 0, formAttr: 0n, genderAttr: 0, abilityAttr: 0, ivs: [0,0,0,0,0,0], ribbons: new Set() } as any;
-    if (globalScene.gameMode.isClassic && [SpeciesId.INCINEROAR, SpeciesId.POPPLIO, SpeciesId.ROWLET].includes(speciesId)) {
+    if (globalScene.gameMode.isClassic && [SpeciesId.INCINEROAR].includes(speciesId)) {
         dexEntry.caughtAttr = 1n;
         dexEntry.seenAttr = 1n;
     }
