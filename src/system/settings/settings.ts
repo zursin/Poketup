@@ -598,7 +598,7 @@ export const Setting: Setting[] = [
         label: i18next.t("settings:experimental"),
       },
     ],
-    default: 0,
+    default: 1,
     type: SettingType.DISPLAY,
     requireReload: true,
   },

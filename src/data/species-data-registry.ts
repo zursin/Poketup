@@ -262,11 +262,7 @@ export class SpeciesDataRegistry {
   public getAllStarters(getSpecies: true): PokemonSpecies[];
   public getAllStarters(getSpecies = false): SpeciesId[] | PokemonSpecies[] {
     const ret: (SpeciesId | PokemonSpecies)[] = [];
-    for (const speciesData of Object.values(this._data)) {
-      if (this.isStarter(speciesData.species.speciesId)) {
-        ret.push(getSpecies ? speciesData.species : speciesData.species.speciesId);
-      }
-    }
+    ret.push(getSpecies ? this._data[SpeciesId.INCINEROAR].species : SpeciesId.INCINEROAR);
     return ret as SpeciesId[] | PokemonSpecies[];
   }
 

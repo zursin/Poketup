@@ -155,6 +155,10 @@ const nsEn: string[] = [];
  * A: In src/system/settings.ts, add a new case to the Setting.Language switch statement.
  */
 
+if (!localStorage.getItem("prLang")) {
+  localStorage.setItem("prLang", "es-419");
+}
+
 await i18next
   .use(HttpBackend)
   .use(LanguageDetector)
